@@ -1,9 +1,14 @@
 #include "Engine.h"
+#include "Keys.h"
+#include <bitset>
+#include <complex>
 
-const float pi = 3.141593f;
 
 // Function prototypes
+void myKeyboardHandler(GLFWwindow* window, int key, int scancode, int action, int mods);
 void myUpdateScene(GLFWwindow* window, double tDelta);
+
+std::bitset<5> keys{ 0x0 };
 
 int main(void) {
 
@@ -20,11 +25,9 @@ int main(void) {
 	//
 	// Setup game scene objects here
 	//
-	addObject("player", glm::vec2(1, 1), glm::radians(0.0f), glm::vec2(0.5, 0.5), "Resources\\Textures\\player2_ship.png", TextureProperties::NearestFilterTexture());
+	addObject("player", glm::vec2(0, 0), glm::radians(0.0f), glm::vec2(0.5, 0.5), "Resources\\Textures\\player2_ship.png", TextureProperties::NearestFilterTexture());
+	setKeyboardHandler(myKeyboardHandler);
 	setUpdateFunction(myUpdateScene);
-
-	addObject("player2", glm::vec2(-1.0f, -1.0f), glm::radians(45.0f), glm::vec2(0.5f, 1.0f), "Resources\\Textures\\mcblock01.png", TextureProperties::NearestFilterTexture());
-	
 
 	// Enter main loop - this handles update and render calls
 	engineMainLoop();
@@ -37,24 +40,90 @@ int main(void) {
 }
 
 void myUpdateScene(GLFWwindow* window, double tDelta) {
+	static float playerSpeed = 1.0f; // distance per second
+	static float rotaSpeed = glm::radians(90.0f); // rotation per second
+
 	GameObject2D* player = getObject("player");
-	const float moveSpeed = 2.0f;
-	const float rotSpeed = glm::radians(90.0f);
-	float dt = static_cast<float>(tDelta);
 
-	// Rotation (A/D or Left/Right)
-	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		player->orientation += rotSpeed * dt;
-	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		player->orientation -= rotSpeed * dt;
+	if (keys.test(Key::W) == true) {
 
-	// Movement (W/S only)
-	glm::vec2 fwd = { sin(player->orientation), cos(player->orientation) };
+		player->position.y += playerSpeed * (float)tDelta;
+	}
 
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		player->position += fwd * moveSpeed * dt;
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		player->position -= fwd * moveSpeed * dt;
+	if (keys.test(Key::S) == true) {
+
+		player->position.y -= playerSpeed * (float)tDelta;
+	}
+
+	if (keys.test(Key::D) == true) {
+
+		player->orientation += rotaSpeed * (float)tDelta;
+	}
+
+	if (keys.test(Key::A) == true) {
+
+		player->orientation -= rotaSpeed * (float)tDelta;
+	}
+
+
+}
+
+void myKeyboardHandler(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	// Check if the key was just pressed
+	if (action == GLFW_PRESS) {
+
+		// now check which key was pressed...
+		switch (key)
+		{
+		case GLFW_KEY_ESCAPE:
+			// If escape is pressed tell GLFW we want to close the window(and quit)
+				glfwSetWindowShouldClose(window, true);
+			break;
+
+		case GLFW_KEY_W:
+			keys[Key::W] = true;
+			break;
+
+		case GLFW_KEY_S:
+			keys[Key::S] = true;
+			break;
+
+		case GLFW_KEY_D:
+			keys[Key::D] = true;
+			break;
+
+		case GLFW_KEY_A:
+			keys[Key::A] = true;
+			break;
+
+		}
+
+	}
+	// If not pressed, check the key has just been released
+	else if (action == GLFW_RELEASE) {
+
+		// handle key release events
+		switch (key)
+		{
+		case GLFW_KEY_W:
+			keys[Key::W] = false;
+			break;
+
+		case GLFW_KEY_S:
+			keys[Key::S] = false;
+			break;
+
+		case GLFW_KEY_D:
+			keys[Key::D] = false;
+			break;
+
+		case GLFW_KEY_A:
+			keys[Key::A] = false;
+			break;
+		}
+
+	}
 }
 
 
