@@ -10,6 +10,8 @@ void myUpdateScene(GLFWwindow* window, double tDelta);
 
 std::bitset<5> keys{ 0x0 };
 
+const float pi = 3.141592f;
+
 int main(void) {
 
 	// Initialise the engine (create window, setup OpenGL backend)
@@ -26,6 +28,7 @@ int main(void) {
 	// Setup game scene objects here
 	//
 	addObject("player", glm::vec2(0, 0), glm::radians(0.0f), glm::vec2(0.5, 0.5), "Resources\\Textures\\player2_ship.png", TextureProperties::NearestFilterTexture());
+	
 	setKeyboardHandler(myKeyboardHandler);
 	setUpdateFunction(myUpdateScene);
 
@@ -40,14 +43,31 @@ int main(void) {
 }
 
 void myUpdateScene(GLFWwindow* window, double tDelta) {
-	static float playerSpeed = 1.0f; // distance per second
+	static float playerSpeed = 0.0f; // distance per second
 	static float rotaSpeed = glm::radians(90.0f); // rotation per second
+	static float acceleration = 1.0f;
+	static float friction = 0.1f;
 
 	GameObject2D* player = getObject("player");
 
 	if (keys.test(Key::W) == true) {
 
-		player->position.y += playerSpeed * (float)tDelta;
+		playerSpeed += acceleration * (float)tDelta;
+		if (playerSpeed > 5.0f) playerSpeed = 5.0f;
+
+
+		std::complex<float> i = std::complex<float>(0.0f, 1.0f); 
+		auto rotation = exp(i * player->orientation);
+
+		player->position.x += playerSpeed * (float)tDelta * rotation.real();
+		player->position.y += playerSpeed * (float)tDelta * rotation.imag();
+
+		//player->position.y += playerSpeed * (float)tDelta;
+	}
+	else {
+
+		playerSpeed -= friction * (float)tDelta;
+		if (playerSpeed < 0.0f) playerSpeed = 0.0f;
 	}
 
 	if (keys.test(Key::S) == true) {
@@ -55,14 +75,16 @@ void myUpdateScene(GLFWwindow* window, double tDelta) {
 		player->position.y -= playerSpeed * (float)tDelta;
 	}
 
+
+
 	if (keys.test(Key::D) == true) {
 
-		player->orientation += rotaSpeed * (float)tDelta;
+		player->orientation -= rotaSpeed * (float)tDelta;
 	}
 
 	if (keys.test(Key::A) == true) {
 
-		player->orientation -= rotaSpeed * (float)tDelta;
+		player->orientation += rotaSpeed * (float)tDelta;
 	}
 
 
