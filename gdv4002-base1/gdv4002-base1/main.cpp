@@ -27,7 +27,7 @@ int main(void) {
 	//
 	// Setup game scene objects here
 	//
-	addObject("player", glm::vec2(0, 0), glm::radians(0.0f), glm::vec2(0.5, 0.5), "Resources\\Textures\\player2_ship.png", TextureProperties::NearestFilterTexture());
+	addObject("player", glm::vec2(0, 0), glm::radians(0.0f), glm::vec2(0.5, 0.5), "Resources\\Textures\\player1_ship.png", TextureProperties::NearestFilterTexture());
 	
 	setKeyboardHandler(myKeyboardHandler);
 	setUpdateFunction(myUpdateScene);
@@ -44,47 +44,50 @@ int main(void) {
 
 void myUpdateScene(GLFWwindow* window, double tDelta) {
 	static float playerSpeed = 0.0f; // distance per second
-	static float rotaSpeed = glm::radians(90.0f); // rotation per second
-	static float acceleration = 1.0f;
-	static float friction = 0.1f;
+	static float rotaSpeed = glm::radians(120.0f); // rotation per second
+	static float acceleration = 2.0f;
+	static float friction = 4.0f; // how much the ship glides to a stop
+	static float maxSpeed = 5.0f; // maximum speed of the ship
 
 	GameObject2D* player = getObject("player");
 
+	std::complex<float> i(0.0f, 1.0f);
+	auto rotation = exp(i * player->orientation);
+	glm::vec2 forward(rotation.real(), rotation.imag());
+
 	if (keys.test(Key::W) == true) {
 
-		playerSpeed += acceleration * (float)tDelta;
-		if (playerSpeed > 5.0f) playerSpeed = 5.0f;
+		playerSpeed += acceleration * (float)tDelta; // increase speed
 
+		if (playerSpeed > maxSpeed)
+			playerSpeed = maxSpeed;
 
-		std::complex<float> i = std::complex<float>(0.0f, 1.0f); 
-		auto rotation = exp(i * player->orientation);
-
-		player->position.x += playerSpeed * (float)tDelta * rotation.real();
-		player->position.y += playerSpeed * (float)tDelta * rotation.imag();
-
-		//player->position.y += playerSpeed * (float)tDelta;
-	}
+	} 
 	else {
+		playerSpeed -= friction * (float)tDelta; // apply friction
+		
+		if (playerSpeed < 0.0f)
+			playerSpeed = 0.0f;
 
-		playerSpeed -= friction * (float)tDelta;
-		if (playerSpeed < 0.0f) playerSpeed = 0.0f;
 	}
 
 	if (keys.test(Key::S) == true) {
 
-		player->position.y -= playerSpeed * (float)tDelta;
+		playerSpeed -= friction * (float)tDelta; // apply friction faster
 	}
 
+	player->position.x += playerSpeed * (float)tDelta * forward.x; // move forward
+	player->position.y += playerSpeed * (float)tDelta * forward.y; // move forward
 
 
 	if (keys.test(Key::D) == true) {
 
-		player->orientation -= rotaSpeed * (float)tDelta;
+		player->orientation -= rotaSpeed * (float)tDelta; // rotate clockwise
 	}
 
 	if (keys.test(Key::A) == true) {
 
-		player->orientation += rotaSpeed * (float)tDelta;
+		player->orientation += rotaSpeed * (float)tDelta; // rotate anti-clockwise
 	}
 
 
