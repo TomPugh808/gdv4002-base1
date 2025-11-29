@@ -11,7 +11,7 @@ Player::Player(glm::vec2 initPosition, float initOrientation, glm::vec2 initSize
 
 void Player::update(double tDelta) {
 	static float playerSpeed = 0.0f; // distance per second
-	static float rotaSpeed = glm::radians(120.0f); // rotation per second
+	static float rotaSpeed = glm::radians(180.0f); // rotation per second
 	static float acceleration = 2.0f;
 	static float friction = 4.0f; // how much the ship glides to a stop
 	static float maxSpeed = 5.0f; // maximum speed of the ship
@@ -43,6 +43,12 @@ void Player::update(double tDelta) {
 
 	position.x += playerSpeed * (float)tDelta * forward.x; // move forward
 	position.y += playerSpeed * (float)tDelta * forward.y; // move forward
+
+	// wrap around screen edges
+	if (position.x > 2.5f) position.x -= 5.0f;
+	if (position.x < -2.5f) position.x += 5.0f;
+	if (position.y > 2.5f) position.y -= 5.0f;
+	if (position.y < -2.5f) position.y += 5.0f;
 
 
 	if (keys.test(Key::D) == true) {
