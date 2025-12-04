@@ -61,6 +61,10 @@ void Player::update(double tDelta) {
 		orientation += rotaSpeed * (float)tDelta; // rotate anti-clockwise
 	}
 
+	if (keys.test(Key::SPACE) == true) {
+
+	}
+
 
 }
 

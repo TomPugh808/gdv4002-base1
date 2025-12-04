@@ -20,6 +20,8 @@ int main(void) {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_DEPTH_TEST);
 
+	srand((unsigned)time(nullptr));
+
 	// Initialise the engine (create window, setup OpenGL backend)
 	int initResult = engineInit("GDV4002 - Applied Maths for Games", 1024, 1024);
 
@@ -42,11 +44,11 @@ int main(void) {
 	GLuint enemyTexture1 = loadTexture("Resources\\Textures\\Asteroid1.png");
 
 	// 2. Create enemy objects
-	Enemy* enemy1 = new Enemy(glm::vec2(0.0f, 0.0f), 5.0f, glm::vec2(1.0f, 1.0f), enemyTexture1, 0.0f, glm::radians(45.0f));
+	Enemy* enemy1 = new Enemy(glm::vec2(0.0f), 5.0f, glm::vec2(0.8f, 0.8f), enemyTexture1, 0.0f, glm::radians(45.0f));
 
-	Enemy* enemy2 = new Enemy(glm::vec2(1.0f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), enemyTexture1, 0.0f, glm::radians(90.0f));
+	Enemy* enemy2 = new Enemy(glm::vec2(0.0f), 0.0f, glm::vec2(0.5f, 0.5f), enemyTexture1, 0.0f, glm::radians(90.0f));
 
-	Enemy* enemy3 = new Enemy(glm::vec2(2.0f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), enemyTexture1, 0.0f, glm::radians(60.0f));
+	Enemy* enemy3 = new Enemy(glm::vec2(0.0f), 0.0f, glm::vec2(0.65f, 0.65f), enemyTexture1, 0.0f, glm::radians(60.0f));
 
 	// Add enemy objects to the engine
 	addObject("enemy1", enemy1);
@@ -95,6 +97,9 @@ void myKeyboardHandler(GLFWwindow* window, int key, int scancode, int action, in
 			keys[Key::A] = true;
 			break;
 
+		case GLFW_KEY_SPACE:
+			keys[Key::SPACE] = true;
+			break;
 		}
 
 	}
@@ -118,6 +123,10 @@ void myKeyboardHandler(GLFWwindow* window, int key, int scancode, int action, in
 
 		case GLFW_KEY_A:
 			keys[Key::A] = false;
+			break;
+
+		case GLFW_KEY_SPACE:
+			keys[Key::SPACE] = true;
 			break;
 		}
 
