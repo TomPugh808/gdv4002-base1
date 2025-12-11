@@ -6,8 +6,8 @@
 class Enemy : public GameObject2D {
 
 private:
-	float		phaseAngle; // in radians
-	float		phaseVelocity; // angle change per second
+	float phaseAngle; // in radians
+	float phaseVelocity; // angle change per second
 	glm::vec2 velocity;
 	float mass = 1.0f;
 

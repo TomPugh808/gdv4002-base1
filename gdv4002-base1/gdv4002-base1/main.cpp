@@ -5,6 +5,7 @@
 #include <bitset>
 #include <complex>
 
+GLuint bulletTexture = 0;
 
 // Function prototypes
 void myKeyboardHandler(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -35,25 +36,28 @@ int main(void) {
 	//
 	// Setup game scene objects here
 	//
-	GLuint playerTexture = loadTexture("Resources\\Textures\\player2_ship.png");
 
+	// Load image textures
+	GLuint playerTexture = loadTexture("Resources\\Textures\\player2_ship.png");
+	GLuint enemyTexture1 = loadTexture("Resources\\Textures\\Asteroid1.png");
+	bulletTexture = loadTexture("Resources\\Textures\\Bullet.png");
+
+
+	// Create the objects
 	Player* mainPlayer = new Player(glm::vec2(-1.5, 0.0f), 0.0f, glm::vec2(0.3f, 0.3f), playerTexture, 1.0f);
+ 
+	Enemy* enemy1 = new Enemy(glm::vec2(0.0f), 5.0f, glm::vec2(0.8f, 0.8f), enemyTexture1, 0.0f, glm::radians(45.0f));
+	Enemy* enemy2 = new Enemy(glm::vec2(0.0f), 0.0f, glm::vec2(0.55f, 0.55f), enemyTexture1, 0.0f, glm::radians(90.0f));
+	Enemy* enemy3 = new Enemy(glm::vec2(0.0f), 0.0f, glm::vec2(0.65f, 0.65f), enemyTexture1, 0.0f, glm::radians(60.0f));
+	Enemy* enemy4 = new Enemy(glm::vec2(0.0f), 0.0f, glm::vec2(0.7f, 0.7f), enemyTexture1, 0.0f, glm::radians(80.0f));
+
+	// Add the objects to the engine
 	addObject("player", mainPlayer);
 
-	// 1. Load enemy texture 
-	GLuint enemyTexture1 = loadTexture("Resources\\Textures\\Asteroid1.png");
-
-	// 2. Create enemy objects
-	Enemy* enemy1 = new Enemy(glm::vec2(0.0f), 5.0f, glm::vec2(0.8f, 0.8f), enemyTexture1, 0.0f, glm::radians(45.0f));
-
-	Enemy* enemy2 = new Enemy(glm::vec2(0.0f), 0.0f, glm::vec2(0.5f, 0.5f), enemyTexture1, 0.0f, glm::radians(90.0f));
-
-	Enemy* enemy3 = new Enemy(glm::vec2(0.0f), 0.0f, glm::vec2(0.65f, 0.65f), enemyTexture1, 0.0f, glm::radians(60.0f));
-
-	// Add enemy objects to the engine
 	addObject("enemy1", enemy1);
 	addObject("enemy2", enemy2);
 	addObject("enemy3", enemy3);
+	addObject("enemy4", enemy4);
 
 	
 	setKeyboardHandler(myKeyboardHandler);
@@ -126,7 +130,7 @@ void myKeyboardHandler(GLFWwindow* window, int key, int scancode, int action, in
 			break;
 
 		case GLFW_KEY_SPACE:
-			keys[Key::SPACE] = true;
+			keys[Key::SPACE] = false;
 			break;
 		}
 

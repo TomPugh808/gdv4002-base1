@@ -15,7 +15,7 @@ Enemy::Enemy(
 : GameObject2D(initPosition, initOrientation, initSize, initTextureID) {
 
 	float angle = ((float)rand() / RAND_MAX) * 6.283185f; // random direction
-	float speed = 0.5f + ((float)rand() / RAND_MAX) * 1.0f; // random speed
+	float speed = 0.3f + ((float)rand() / RAND_MAX) * 0.8f; // random speed
 
 	// random position
 	position.x = -2.5f + ((float)rand() / RAND_MAX) * 5.0f;
@@ -23,8 +23,7 @@ Enemy::Enemy(
 
 	velocity = glm::vec2(
 		cos(angle) * speed,
-		sin(angle) * speed
-	);
+		sin(angle) * speed);
 
 	phaseAngle = initialPhase;
 	phaseVelocity = initialPhaseVelocity;

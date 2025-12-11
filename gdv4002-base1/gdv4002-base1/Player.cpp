@@ -1,9 +1,12 @@
 #include "Player.h"
+#include "Engine.h"
 #include "Keys.h"
+#include "Bullet.h"
 #include <bitset>
 #include <complex>
 
 extern std::bitset<5> keys;
+extern GLuint bulletTexture;
 
 Player::Player(glm::vec2 initPosition, float initOrientation, glm::vec2 initSize, GLuint initTextureID, float initialPlayerSpeed) : GameObject2D(initPosition, initOrientation, initSize, initTextureID) {
 	playerSpeed = initialPlayerSpeed;
@@ -12,9 +15,9 @@ Player::Player(glm::vec2 initPosition, float initOrientation, glm::vec2 initSize
 void Player::update(double tDelta) {
 	static float playerSpeed = 0.0f; // distance per second
 	static float rotaSpeed = glm::radians(180.0f); // rotation per second
-	static float acceleration = 2.0f;
+	static float acceleration = 1.5f;
 	static float friction = 4.0f; // how much the ship glides to a stop
-	static float maxSpeed = 5.0f; // maximum speed of the ship
+	static float maxSpeed = 3.0f; // maximum speed of the ship
 
 	std::complex<float> i(0.0f, 1.0f);
 	auto rotation = exp(i * orientation);
@@ -61,11 +64,20 @@ void Player::update(double tDelta) {
 		orientation += rotaSpeed * (float)tDelta; // rotate anti-clockwise
 	}
 
-	if (keys.test(Key::SPACE) == true) {
+	if (shootTimer > 0.0f)
+		shootTimer -= (float)tDelta;
 
+	if (keys.test(Key::SPACE) == true && shootTimer <= 0.0f) { // shoot bullet
+
+		shoot();
+		shootTimer = shootCooldown; // resets cooldown timer
 	}
 
 
 }
 
+void Player::shoot() {
+	Bullet* b = new Bullet(position, orientation, glm::vec2(1.0f, 1.0f), bulletTexture, 3.0f);
 
+	addObject("bullet", b);
+}
