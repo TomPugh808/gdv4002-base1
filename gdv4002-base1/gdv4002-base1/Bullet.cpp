@@ -19,4 +19,6 @@ void Bullet::update(double tDelta)
     // Move the bullet
     position.x += dx * bulletSpeed * tDelta;
     position.y += dy * bulletSpeed * tDelta;
+
 }
+

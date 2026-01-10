@@ -1,6 +1,7 @@
 #include "Engine.h"
 #include "Keys.h"
 #include "Player.h"
+#include "Bullet.h"
 #include "Enemy.h"
 #include <bitset>
 #include <complex>
@@ -58,6 +59,8 @@ int main(void) {
 	addObject("enemy2", enemy2);
 	addObject("enemy3", enemy3);
 	addObject("enemy4", enemy4);
+
+
 
 	
 	setKeyboardHandler(myKeyboardHandler);
@@ -136,6 +139,7 @@ void myKeyboardHandler(GLFWwindow* window, int key, int scancode, int action, in
 
 	}
 }
+
 
 	
 

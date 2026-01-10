@@ -8,6 +8,7 @@ public:
     Bullet(glm::vec2 pos, float orientation, glm::vec2 size, GLuint texID, float speed);
     void update(double tDelta) override;
 
+
 private:
     float bulletSpeed;
 };

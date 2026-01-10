@@ -23,29 +23,35 @@ void Player::update(double tDelta) {
 	auto rotation = exp(i * orientation);
 	glm::vec2 forward(rotation.real(), rotation.imag());
 
-	if (keys.test(Key::W) == true) {
-
-		playerSpeed += acceleration * (float)tDelta; // increase speed
-
+	// W = accelerate forward
+	if (keys.test(Key::W)) {
+		playerSpeed += acceleration * 3.5f * (float)tDelta;
 		if (playerSpeed > maxSpeed)
 			playerSpeed = maxSpeed;
-
-	}
-	else {
-		playerSpeed -= friction * (float)tDelta; // apply friction
-
-		if (playerSpeed < 0.0f)
-			playerSpeed = 0.0f;
-
 	}
 
-	if (keys.test(Key::S) == true) {
-
-		playerSpeed -= friction * (float)tDelta; // apply friction faster
+	// S = decelerate then reverse
+	if (keys.test(Key::S)) {
+		playerSpeed -= acceleration * 3.5f * (float)tDelta;
+		if (playerSpeed < -maxSpeed)
+			playerSpeed = -maxSpeed;
 	}
 
-	position.x += playerSpeed * (float)tDelta * forward.x; // move forward
-	position.y += playerSpeed * (float)tDelta * forward.y; // move forward
+	// friction ONLY when neither W nor S is held
+	if (!keys.test(Key::W) && !keys.test(Key::S)) {
+		if (playerSpeed > 0.0f) {
+			playerSpeed -= friction * (float)tDelta;
+			if (playerSpeed < 0.0f) playerSpeed = 0.0f;
+		}
+		else if (playerSpeed < 0.0f) {
+			playerSpeed += friction * (float)tDelta;
+			if (playerSpeed > 0.0f) playerSpeed = 0.0f;
+		}
+	}
+
+	// move
+	position.x += playerSpeed * (float)tDelta * forward.x;
+	position.y += playerSpeed * (float)tDelta * forward.y;
 
 	// wrap around screen edges
 	if (position.x > 2.5f) position.x -= 5.0f;
@@ -80,4 +86,5 @@ void Player::shoot() {
 	Bullet* b = new Bullet(position, orientation, glm::vec2(1.0f, 1.0f), bulletTexture, 3.0f);
 
 	addObject("bullet", b);
+
 }
