@@ -32,7 +32,7 @@ void Player::update(double tDelta) {
 
 	// S = decelerate then reverse
 	if (keys.test(Key::S)) {
-		playerSpeed -= acceleration * friction * (float)tDelta;
+		playerSpeed -= acceleration * (float)tDelta;
 		if (playerSpeed < -maxSpeed)
 			playerSpeed = -maxSpeed;
 	}
